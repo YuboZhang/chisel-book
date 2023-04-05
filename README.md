@@ -45,3 +45,6 @@ with Chisel. The slides are [here](slides). You can see a
 given at DTU that includes PDFs of the slides and the corresponding
 [lab material](https://github.com/schoeberl/chisel-lab).
 
+# Build for Chinese version
+- IDE: TeXstdudio
+- pdflatex
