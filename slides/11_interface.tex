@@ -15,43 +15,38 @@ Embedded Systems Engineering}
 \titlepage
 \end{frame}
 
-\begin{frame}[fragile]{TODO}
-\begin{itemize}
-\item Check for overlap with UART in 09 (remove)
-\item Add microprocessor bus figures
-\item Some words on AXI
-\item Also how to map IO devices into a memory space (maybe this is too early, topic of agile HW design, or HW/SW codesign.)
-\item Maybe too much repetition?
-\item Get new stuff in
-\item Add asserts
-\item FPGAs and resource requirements
-\end{itemize}
-\end{frame}
-
 
 \begin{frame}[fragile]{Overview}
 \begin{itemize}
-%\item TODO: more from the mid-term eval, e.g., \emph{Potentially utilizing some more memory (BRAM) or potentially some of the hardware interfaces which the Basys 3 Board provides, such as USB and VGA.} This might be in week 11 with serial port. Or I move more stuff into week 10.
-%\item TODO: FIFO as example of the ready valid thing (next week)
-%\item TODO: FPGA internals
-%\item TODO: A bit more about the physical chip design/architechture. When a chip is shown and referes to, and i have no idea what im looking at, its a bit difficult to follow along.
-%\item Repeat FSMD (for the vending machine)
-%\begin{itemize}
-%\item I have seen some intermix of FSM and datapath
-%\item Works only for small designs
-%\end{itemize}
+\item Repeat FSMD (for the vending machine)
+\begin{itemize}
+\item I have (earlier) seen some intermix of FSM and datapath
+\item Works only for small designs
+\end{itemize}
 \item Quick reminder on FSMD
 \item Interfaces
 \item Memory (intern and extern)
+\begin{itemize}
+\item You've asked for it during the midterm eval
+\end{itemize}
+\item Busses
 \item The course evaluation should be open for feedback
 \item Lab is the vending machine
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Notes}
 \begin{itemize}
-\item What is your lab status? Display multiplexing working?
+\item Luca's course
+\item Course evaluation is open
+\item Did you do a \href{https://tinytapeout.com/}{Tiny Tapeout}?
+\begin{itemize}
+\item Next deadline is st June
 \end{itemize}
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{I have seen similar code}
+\begin{frame}[fragile]{I have seen similar code (not this year)}
 \begin{chisel}
   when(io.coin2) {
     sum := sum + 2.U
@@ -142,7 +137,6 @@ Embedded Systems Engineering}
 \item Extend the test along the development
 \begin{itemize}
 \item Remember test driven development?
-\item Maybe write the test before the implementation
 \item Maybe test developer and FSMD developer are not always the same person
 \end{itemize}
 \end{itemize}
@@ -202,8 +196,8 @@ Embedded Systems Engineering}
 \item Remember the circuit of a register (flip-flop)?
 \item Two latches: \href{https://en.wikipedia.org/wiki/Flip-flop_(electronics)#Master%E2%80%93slave_edge-triggered_D_flip-flop}{master and slave}
 \item One (enable) latch can be built with 4 NAND gates
-\item a NAND gate needs 6 transistors, an inverter 2 transistors
-\item A flip-flop needs 20 transistors (for a single bit)
+\item a NAND gate needs 4 transistors, an inverter 2 transistors
+\item A flip-flop needs 36 transistors (for a single bit)
 \item Can we do better?
 \end{itemize}
 \end{frame}
@@ -260,7 +254,7 @@ Embedded Systems Engineering}
 \item No clock, just the correct timing
 \item Apply the address and after some time the data is valid
 \item But one can add input registers, which makes it a synchronous SRAM
-\item Current FPGAs have only synchronous memories
+\item Current FPGAs have synchronous memories only
 \item This means the result of a read is available one clock cycle after the address is given
 \begin{itemize}
 \item This is different from the use of flip-flops (\code{Reg(Vec(..))})
@@ -464,8 +458,31 @@ our synchronous design
 \begin{itemize}
 \item Arbitration for multiple master
 \end{itemize}
-\item Sketch a small microprocessor system
+%\item Sketch a small microprocessor system
 \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{A Classic Microprocessor Bus}
+\begin{figure}
+  \includegraphics[scale=\scale]{../figures/bus}
+\end{figure}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{Does This Work On-Chip?}
+\begin{itemize}
+\item Just mapping that bus on-chip?
+\item Tri-state not so easy
+\item Wires are cheap
+\item Use dedicated connections and a Mux
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{An On-Chip Bus}
+\begin{figure}
+  \includegraphics[scale=0.6]{../figures/bus-on-chip}
+\end{figure}
 \end{frame}
 
 \begin{frame}[fragile]{Serial I/O Interface}
@@ -574,22 +591,7 @@ our synchronous design
 \item USB interface for FPAG programming
 \item But also provides a RS 232 to the FPGA
 \item You can talk with your laptop
-\item Your VM could write out some text
-\item Use the Chisel code I showed you
-\item Open a terminal to watch % (show it)
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]{RS 232 from ip-contributions}
-\begin{itemize}
-\item A collection of Chisel hardware components
-\item Contains the RS232 interface
-\item Distributed as library from Maven Central
-\item No need to copy source around
-\item Just include it in your \code{build.sbt}
-\item Very easy distribution of open-source components
-\item You can contribute!
-\item \href{https://github.com/freechipsproject/ip-contributions}{ip-contributions}
+\item You have used it two weeks ago
 \end{itemize}
 \end{frame}
 
@@ -601,7 +603,7 @@ our synchronous design
 \item As usual, show and discuss with a TA
 \item Get a tick from a TA when done. This is VERY important!
 \item Add features and show again to the TA
-\item Next week: no lecture, just development in the lab
+\item Next week: guest lecture from Peter Jensen (SyoSil) on verification
 \end{itemize}
 \end{frame}
 

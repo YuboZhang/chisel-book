@@ -42,7 +42,7 @@ First part is usually lectures and second part is reserved for project work.
 Students will work in groups of two or three on small lab exercises
 and as a final project on a vending machine.
 
-The course is lectured B308-A013 and the labs are in B308-IT127, B308-IT017.
+The course is lectured B308-A013 and the labs are in B308-IT117, B308-IT127.
 
 ### Pensum List
 
@@ -69,7 +69,7 @@ In all Dally sections ignore VHDL code
 
 #### Slides
 
- * RC switching model from L03 slides (in DTU Inside) 
+ * TBD: RC switching model from L03 slides (in DTU Inside) 
 
 ## Recommended Textbooks
 
@@ -92,7 +92,7 @@ The Schoeberl book is open access and freely available.
 
 [Martin Schoeberl](http://www.imm.dtu.dk/%7Emasca/)
 
-## Lecture Plan (2023)
+## Lecture Plan (2024)
 
 *This lecture plan may change during the semester, adapting to the current teaching situation.*
 
@@ -131,7 +131,20 @@ The Schoeberl book is open access and freely available.
 **Lab:** [Components and sequential circuits](https://github.com/schoeberl/chisel-lab)
 
 
-### Week 4 Timing (guest lecture by Jens Sparsø)
+### Week 4 Testing and Verification
+
+**Topics:** Sequential building blocks, testing and verification in Chisel,
+waveform viewing
+
+**Slides:** [04_testing.pdf](04_testing.pdf)
+
+**Reading:** Dally: 2.1.4 and 20, Chisel: 3
+
+**Lab:** [A Simple Tester](https://github.com/schoeberl/chisel-lab)
+
+
+
+### Week 5 Timing (self study, no lecture)
 
 **Topics:** Delay and Power, Timing, and Metastability
 
@@ -139,21 +152,9 @@ The Schoeberl book is open access and freely available.
 
 **Reading:** Dally: 15.1-15.6, and 28.1-28.4
 
-**Optional reading:** Dally: 5.1-5.4 (replaced by slides)
+**Optional reading:** (Slides in DTU Learn)
 
 **Lab:** 15.1, 15.10, 15.11, 15.12, 15.19, 15.20, 15.21
-
-
-### Week 5 Testing and Verification
-
-**Topics:** Sequential building blocks, testing and verification in Chisel,
-waveform viewing
-
-**Slides:** [05_testing.pdf](05_testing.pdf)
-
-**Reading:** Dally: 2.1.4 and 20, Chisel: 3
-
-**Lab:** [A Simple Tester](https://github.com/schoeberl/chisel-lab)
 
 
 ### Week 6 State Machines
@@ -162,7 +163,7 @@ waveform viewing
 
 **Slides:** [06_fsm.pdf](06_fsm.pdf)
 
-**Reading:** Dally: 14.3-14.5, Chisel: 8 (2nd edition)
+**Reading:** Dally: 14.3-14.5, Chisel: 8
 
 **Lab:** [Hexadecimal to 7-segment decoder](https://github.com/schoeberl/chisel-lab)
 
@@ -173,7 +174,7 @@ waveform viewing
 
 **Slides:** [07_fsmd.pdf](07_fsmd.pdf)
 
-**Reading:** Dally: 16.3, 29.1-29.3, Chisel: 9.2 (2nd edition)
+**Reading:** Dally: 16.3, 29.1-29.3, Chisel: 9.2
 
 **Lab:** Dally 14.3, 14.5 (Sketch a Chisel implementation on paper), 14.28, Sketch a Chisel implementation on paper for 14.28
 
@@ -184,9 +185,12 @@ waveform viewing
 
 **Slides:** [08_refactor.pdf](08_refactor.pdf)
 
-**Reading:** Dally: 17, Chisel: 7, 9.1
+**Reading:** Dally: 17, Chisel: 9.1, 7
 
 **Lab:** [Multiplexed Seven-Segment Display](https://github.com/schoeberl/chisel-lab)
+
+
+### Easter Week
 
 
 ### Week 9 Communications State Machines
@@ -198,9 +202,6 @@ waveform viewing
 **Reading:** Dally: 22, Chisel: 9.3
 
 **Lab:** [Using a UART Component](https://github.com/schoeberl/chisel-lab)
-
-
-### Easter Week
 
 
 ### Week 10 Vending Machine Specification (1/2 hour) (TBD)
@@ -221,7 +222,7 @@ waveform viewing
 **Lab:** [The Vending Machine](https://github.com/schoeberl/chisel-lab)
 
 
-### Week 12 No lecture
+### Week 12 Verification (guest lecture)
 
 **Lab:** [The Vending Machine](https://github.com/schoeberl/chisel-lab)
 

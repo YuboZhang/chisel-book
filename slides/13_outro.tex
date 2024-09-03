@@ -15,19 +15,18 @@ Embedded Systems Engineering}
 \titlepage
 \end{frame}
 
-
 \begin{frame}[fragile]{Overview}
 \begin{itemize}
 \item Evaluation
 % \item Chisel from scratch
 \item Who is Alan Turing?
 \item Lipsi, a simple processor
-\item Show vending machine today
-\item Report hand-in at DTU Learn (18 May)
+\item Show vending machine next week
+\item Report hand-in at DTU Learn (26 May)
 %\item We have well known guest lectures today
-%\begin{itemize}
-%\item Tjark and Kasper will present today
-%\end{itemize}
+\begin{itemize}
+\item Please check now if visible
+\end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -48,10 +47,14 @@ Embedded Systems Engineering}
 \begin{frame}[fragile]{Evaluation}
 \begin{itemize}
 %\item Thank you!
-\item In general, it looks like you enjoyed DE2 and Chisel :-)
-\item Some found it too easy, some found it hard
-\item Confusing on learning Java and Chisel in the same semester
-\item Let us look into it
+\item In general, it looks like most enjoyed DE2 :-)
+\item Some complained it was only Chisel and nothing new
+\begin{itemize}
+\item I disagree
+\item e.g., did you already know: tick generation, FSMD, input synchronization, timing, verification, memory, UART,...
+\end{itemize}
+\item We can take a quick look
+\item You can give me additional feedback here in class
 \end{itemize}
 \end{frame}
 
@@ -113,6 +116,7 @@ Embedded Systems Engineering}
 \item The paper: \href{https://www.jopdesign.com/doc/lipsi.pdf}{Lipsi: Probably the Smallest Processor in the World}
 \item Code: \href{https://github.com/schoeberl/lipsi}{The Chisel Code}
 \item A simple Accumulator machine
+\item Small enough to fit into a \href{https://github.com/schoeberl/tt06-lipsi}{Tiny Tapeout tile}
 \end{itemize}
 \end{frame}
 
@@ -265,7 +269,7 @@ Encoding & Name & Operation \\
 \item Code memory for instructions
 \item Data memory for data
 \item Merge those two
-\item Instruction memory filled by a program
+\item Instruction memory filled with a program
 \item That program is an assembler written in Scala
 \end{itemize}
 \end{frame}
@@ -336,7 +340,7 @@ This is done at hardware generation
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{A Processor Summary}
+\begin{frame}[fragile]{Processor Summary}
 \begin{itemize}
 \item This is a tiny processor as an example
 \item Chisel is productive: this was all done in 14 hours!
@@ -353,7 +357,6 @@ This is done at hardware generation
 
 \begin{frame}[fragile]{02155: Computer Architecture and Engineering}
 \begin{itemize}
-\item Given by Alberto and me
 \item \href{http://www2.imm.dtu.dk/courses/02155/}{Course description}
 \item Learn how a real-world processor work
 \item Learn the language of the machine (instructions)
@@ -364,14 +367,14 @@ This is done at hardware generation
 \item In any language, may be in Chisel
 \item May even be a full implementation in an FPGA
 \end{itemize}
-\item You can also do a complete RISC-V in an FPGA in a Fagproject
+\item You can also do a complete RISC-V in an FPGA in a 3 weeks course
 \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Future with Digital Design Education}
 \begin{itemize}
 \item There are many companies in DK doing chip design
-\item See \href{https://www.dtu.dk/english/news/all-news/nyhed?id=07dcbdbb-b948-425a-8568-7331bb271414}{DTU Chip Day}
+\item See \href{https://chipday.dk/}{DTU Chip Day}
 \item FPGAs are available in the cloud
 \begin{itemize}
 \item To speedup computing
@@ -379,10 +382,6 @@ This is done at hardware generation
 \end{itemize}
 \item FPGAs are also used in embedded systems
 \item Digital design is only part of a computer engineering education
-\item But DTU does not have a clear path to a computer engineering education
-\begin{itemize}
-\item We are working on a Computer Engineering BSc
-\end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -392,16 +391,14 @@ This is done at hardware generation
 \begin{itemize}
 \item On the interaction between hardware and software
 \item Very well payed jobs :-)
-\item Not an easy choice at DTU
+\item DTU has now a clear path to a computer engineering education
 \begin{itemize}
-\item No BSc available
-\item Between EE and CS
+\item We started with the Computer Engineering (CE) BSc in fall 2023
 \end{itemize}
-\item Start with Bsc. in EE
-\item Specialization in Indlejrede systemer og programmering
+\item With a Bsc. in EE: specialization in Indlejrede systemer og programmering
 \begin{itemize}
-\item 02155: Computer Architecture and Engineering
-\item 02105: Algoritmer og datastrukturer
+\item 02155 Computer Architecture and Engineering
+\item 02105 Algoritmer og datastrukturer
 \end{itemize}
 \item Continue as MSc. in Computer Science and Engineering
 \item Specialization in
@@ -412,37 +409,72 @@ This is done at hardware generation
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Computer Engineering within the EE Bachelor}
+\begin{frame}[fragile]{Chip Design within the CE and EE Bachelor}
 \begin{itemize}
-\item You get well educated in electronics
-\item Add the software side to your education
 \item Select some of the following courses
 \begin{itemize}
-\item 02155: Computer Architecture and Engineering
-\item 02105: Algorithms and Data Structures 1
-\item 02161: Software Engineering 1
-\item 02159: Operating Systems
-\item 02157: Functional Programming
-\item 02141: Computer Science Modelling
-\item 02110: Algorithms and Data Structures 2
+\item 02113 Digital Systems Design Project, 3 week (2nd)
+\item 02155 Computer Architecture and Engineering (3rd)
+\item 02114 Design of a RISC-V Microprocessor, 3 week (3rd)
+\item 02201 Agile Hardware Design (5th)
+\item 02118 Introduction into Chip Design (6th)
 \end{itemize}
-\item See also \href{https://www.dtu.dk/da/english/Education/msc/Programmes/computer_science_and_engineering/Prerequisites}{Prerequisites for EE Bsc}
+\item EE: add the software side to your education
+\begin{itemize}
+\item 02105 Algorithms and Data Structures 1
+\item 02161 Software Engineering 1
+\item 02159 Operating Systems
+\item 02157 Functional Programming
+\item 02110 Algorithms and Data Structures 2
+\end{itemize}
+%\item See also \href{https://www.dtu.dk/da/english/Education/msc/Programmes/computer_science_and_engineering/Prerequisites}{Prerequisites for the CSE master}
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{Digital Design within an EE Master}
+\begin{frame}[fragile]{Introduction to Chip Design}
 \begin{itemize}
-\item Not an obvious choice, as there is no specialization in digital systems
+\item Regular start: spring 2026
+\item Seminar like initial iteration: spring 2025
+\item Topics:
+\begin{itemize}
+\item Basics: transistors, wire, power, time, memories
+\item Partitioning, floor planning, and individual hardening
+\item Multiclock designs and clock domain crossing
+\item A multicore SoC example (e.g., T-CREST plus AI accelerators)
+\item Network-on-Chip to connect the components
+\end{itemize}
+\item Use of open-source tools (OpenROAD)
+\item Tape out with Tiny Tapeout
+\begin{itemize}
+\item Each student group will receive a chip + board
+\end{itemize}
+\item Have a (virtual) tape out at the end of the semester
+\begin{itemize}
+\item With Google/Skywater
+\item Or Edu4Chip 22 nm GF
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Digital Design within a CSE or EE Master}
+\begin{itemize}
 \item Select some of the following courses
 \begin{itemize}
-\item 02155: Computer Architecture and Engineering
-\item 02203: Design of Digital Systems
-\item 02211: Advanced Computer Architecture
-\item 02205: VLSI Design
-\item 02217: Design of Arithmetic Processors
-\item 02204: Design of Asynchronous Circuits
-\item 02209: Test of Digital Systems
+\item 02201 Agile Hardware Design 
+\item 02203 Design of Digital Systems
+\item 02211 Advanced Computer Architecture
+\item 02205 VLSI Design
+\item (02217 Design of Arithmetic Processors)
+\item (02204 Design of Asynchronous Circuits)
+\item 02209 Test of Digital Systems
+\item more to come...
 \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Reading Recommendation}
+\begin{itemize}
+\item \href{https://www.amazon.com/Chip-War-Worlds-Critical-Technology/dp/1982172002}{Chip War}
 \end{itemize}
 \end{frame}
 
