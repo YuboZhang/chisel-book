@@ -387,7 +387,7 @@ Note that Java 21 is currently not supported by \code{sbt}.
 
 \todo{We should also show more Leros code.}
 
-\todo{VHDL and SV}
+\todo{VHDL and Verilog}
 
 
 We extended the testing chapter with a description how to access internal signals. \todo{That is too
@@ -524,8 +524,8 @@ We include links to further reading in the running text, mostly to
 
 Chisel is a Scala library, and the easiest way to install Chisel and Scala is
 with \code{sbt}, the Scala build tool. Scala itself depends on the installation
-of \myref{https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html}{Java JDK 1.8}
-(or a later version).
+of \myref{https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html}{Java JDK 8}
+(or a later version, but less than version 21, as 21 breaks \code{sbt}).
 As Oracle has changed the license for Java, it may be easier to
 install OpenJDK from \myref{https://adoptopenjdk.net/}{AdoptOpenJDK}.
 
@@ -537,7 +537,7 @@ explains how to open an existing Chisel project in IntelliJ.
 
 \subsection{macOS}
 
-Install the Java OpenJDK 8 (or 11) from \myref{https://adoptopenjdk.net/}{AdoptOpenJDK}.
+Install the Java OpenJDK 8 (or later, but less then 21) from \myref{https://adoptopenjdk.net/}{AdoptOpenJDK}.
 On Mac OS X, with the packet manager \myref{https://brew.sh/}{Homebrew},
 \code{sbt} and git can be installed with:
 
@@ -576,7 +576,8 @@ Install a \myref{https://git-scm.com/download/win}{git client}.
 \subsection{FPGA Tools}
 
 To build hardware for an FPGA, you need a synthesize tool. The two major
-FPGA vendors, Intel\footnote{former Altera} and AMD,\footnote{former Xilinx} provide free versions of
+FPGA vendors, Altera, an Intel Company\footnote{former Intel and former Altera}
+and AMD,\footnote{former Xilinx} provide free versions of
 their tools that cover small to medium-sized FPGAs. Those medium-sized
 FPGAs are large enough to build a multicore RISC style processors.
 Intel provides the \myref{https://www.altera.com/products/design-software/fpga-design/quartus-prime/download.html}{Quartus Prime Lite Edition} and Xilinx the
@@ -707,7 +708,7 @@ a simple:
 $ make
 \end{chisel}
 
-This book is freely available as a PDF eBook and in classical printed form
+This book is freely available as a PDF eBook and in classical printed version from
 \myref{https://www.amazon.com/dp/168933603X/}{Amazon}.
 The eBook version features links to further resources
 and \myref{https://www.wikipedia.org/}{Wikipedia} entries.
@@ -741,7 +742,7 @@ The exercises also fit well for a selfstudy with this book.
 point with a very minimal hardware (an adder) and a test. That project is a GitHub template where you
 can base your GitHub repository on.
 \item The \myref{https://github.com/freechipsproject/chisel-cheatsheet/releases/latest/download/chisel_cheatsheet.pdf}{Chisel3 Cheat Sheet} summarizes the main constructs of Chisel on a single page.
-\item Scott Beamer's course \myref{https://classes.soe.ucsc.edu/cse293/Winter22/}{Agile Hardware Design}
+\item Scott Beamer's course \myref{https://classes.soe.ucsc.edu/cse228a/Winter24/}{Agile Hardware Design}
 contains advanced Chisel examples. The \myref{https://github.com/agile-hw/lectures}{lectures}
 include executable source examples and are available as Jupyter notebooks.
 %\item The \myref{https://github.com/freechipsproject/chisel3/wiki}{Chisel Wiki} contains
@@ -3346,14 +3347,12 @@ data from memory.
 
 \longlist{code/memory_forwarding.txt}{A memory with a forwarding circuit.}{lst:memory:forward}
 
-Chisel also provides \code{Mem}, which represents a memory with synchronous
-write and an asynchronous read. As this memory type is usually not directly available
-in an FPGA, the synthesize tool will build it out of flip-flops.
-Therefore, we recommend using \code{SyncReadMem}. If asynchronous read behavior is needed and
-the resources are available in the FPGA you are using (e.g., in the shape of LUTRAM on Xilinx
-FPGAs), you can manually implement this as a \code{BlackBox}. Vendors typically provide
-code templates that can be used directly for this.
+As this pattern is common, Chisel provides an optional parameter in \code{SyncReadMem}
+to define the read-during-write behavior. \code{WriteFirst} generates Verilog code that
+includes the forwarding if needed. The other two options are \code{ReadFirst}
+and \code{Undefined}.
 
+\shortlist{code/memory_write_first.txt}
 
 Memories in FPGAs can be initialized with either binary or hexadecimal initialization files.
 The files are simple ASCII text files with the same number of lines as there are
@@ -3365,6 +3364,24 @@ emission of a separate Verilog file and works in ChiselTest.
 %\code{loadMemoryFromFileInline} results in an inlined initialization and does not
 %yet work in ChiselTest. Either way,
 Initializations are based around calls to \code{readmemb} or \code{readmemh}.
+
+To initialize on-chip memory from Scala during generation time, we need to first
+write the content into a file and then use \code{loadMemoryFromFile}.
+Listing~\ref{lst:memory:init} shows an example of initializing a memory with a string.
+
+\longlist{code/memory_init.txt}{Memory initialization.}{lst:memory:init}
+
+
+Chisel also provides \code{Mem}, which represents a memory with synchronous
+write and an asynchronous read. As this memory type is usually not directly available
+in an FPGA, the synthesize tool will build it out of flip-flops.
+Therefore, we recommend using \code{SyncReadMem}. If asynchronous read behavior is needed and
+the resources are available in the FPGA you are using (e.g., as a LUT RAM on Xilinx
+FPGAs), you can manually implement this as a \code{BlackBox}. Vendors typically provide
+code templates that can be used directly for this.
+
+
+
 
 \section{Exercises}
 
@@ -3395,8 +3412,21 @@ Sketch the block diagram for the following circuits:
 
 \shortlist{code/draw_acc.txt}
 
-\todo{Luca: More exercises would be nice. Maybe in the future?}
+As an advanced exercise try using an on-chip memory. Instantiate a \code{SyncReadMem}
+and create two communicating state machines. The first state machine writes a string
+into the memory. When done, it starts the second state machine that reads back
+the string from the memory. Test with simple \code{printf} statements in the
+reading state machine. Be careful in the reading, that the read value comes one clock cycle
+later then applying the address to the memory.
+You can extend that example by writing a Chisel test to test the memory.
 
+Sometimes, one would like to download content of a memory from a laptop,
+e.g., when building a processor to load a program. Assume you have a
+serial port (see Section~\ref{sec:uart}) available that connects your FPGA
+board to your laptop. Can you envision a protocol on the serial port
+with a state machine in the FPGA to download memory content into
+the FPGA after configuring it. Downloading at runtime also avoids synthesizing
+for the FPGA again, after the memory content changes.
 
 \chapter{Input Processing}
 \label{sec:input}
@@ -7249,9 +7279,9 @@ also contains projects for various popular FPGA boards:
 
 \appendix
 
-\chapter{VHDL and SystemVerilog}
+\chapter{VHDL and Verilog}
 
-\index{SystemVerilog}
+\index{Verilog}
 \index{VHDL}
 
 This book teaches digital design with Chisel.
@@ -7262,28 +7292,34 @@ and how to describe digital circuits in Chisel,
 switching to another language will take just a few days.
 
 The two dominating hardware description languages are
-VHDL and Verilog, with an update to SystemVerilog (SV). The recent movement
-in hardware development and testing is from VHDL to SV.
+VHDL and Verilog, with an update to SystemVerilog (SV).
+The recent movement in hardware development and testing is from VHDL to SV.
+However, as many open source tools still mainly support standard Verilog,
+we will use plain Verilog in the examples.
 
-We will show you code examples in Chisel, VHDL, and SV.
-Note that this appendix is not a complete introduction into VHDL or SV.
-It shall just get you started to translate hardware constructs from Chisel to VHDL and SV.
+We will show you code examples in Chisel, VHDL, and Verilog.
+Note that this appendix is not a complete introduction into VHDL or Verilog.
+It shall just get you started to be able to read VHDL and Verilog and
+enable you to translate hardware constructs from Chisel to VHDL and Verilog.
+For the translation from Chisel to Verilog you can also start with the Chisel
+generated Verilog. It might be less readable than hand-written code, but a working
+starting point.
 A nice side-by-side introduction of VHDL and SystemVerilog can be found in~\cite{harris2021digital}.
 Furthermore, we will show how we can integrate legacy code in Verilog into a Chisel design.
 
 \section{Code Examples}
 
 
-We will present the VHDL and SV examples together with the Chisel version
+We will present the VHDL and Verilog examples together with the Chisel version
 of the code.
 
 \subsection{Components}
 
-\longlist{code/sv_ch_adder.txt}{A simple component in Chisel.}{lst:sv:ch:adder}
+\longlist{code/v_ch_adder.txt}{A simple component in Chisel.}{lst:v:ch:adder}
 
 \longlist{code/vhdl_adder.txt}{A simple component in VHDL.}{lst:vhdl:adder}
 
-Listing~\ref{lst:sv:ch:adder} shows a simple adder~\footnote{We should never use
+Listing~\ref{lst:v:ch:adder} shows a simple adder~\footnote{We should never use
 such small components in real designs, when the code that defines the function is just a few lines.
 In this example just one line. However, we keep it short for the presentation
 of the concept of a component.}
@@ -7300,24 +7336,24 @@ However, today that naming has lost a practical meaning.
 VHDL is case insensitive, the means \code{Adder} and \code{adder} are treated
 equally. However, current practice is to stick to lower case for identifiers.
 
-\longlist{code/sv_adder.txt}{A simple component in SystemVerilog.}{lst:sv:adder}
+\longlist{code/v_adder.txt}{A simple component in Verilog.}{lst:v:adder}
 
-Listing~\ref{lst:sv:adder} shows the adder component in SV. Similar to Chisel,
+Listing~\ref{lst:v:adder} shows the adder component in Verilog. Similar to Chisel,
 a component is also called a module.~\footnote{In fact, the naming in Chisel
 was inspired by Verilog.}
 The adder has two 8-bit inputs and one 8-bit output.
-The main body of the module uses the SV construct \code{always\_comb}
-to declare that this code block describes combinational logic.
-The difference between SV and Chisel is minimal for such a simple component.
+The \code{assign} statement is a concurrent statement that continuously
+assigns the value of the sum of \code{a} and \code{b} to the output port \code{sum}.
+The difference between Verilog and Chisel is minimal for such a simple component.
 
 
 \subsection{Using a Component}
 
-\longlist{code/sv_use_chisel_adder.txt}{Using the \code{Adder} component in Chisel.}{lst:ch:use}
+\longlist{code/v_use_chisel_adder.txt}{Using the \code{ChiselAdder} component in Chisel.}{lst:ch:use}
 
 \longlist{code/vhdl_use_adder.txt}{Using the \code{adder} component in VHDL.}{lst:vhdl:use}
 
-\longlist{code/sv_use_adder.txt}{Using the \code{Adder} component in SV.}{lst:sv:use}
+\longlist{code/v_use_adder.txt}{Using the \code{adder} component in Verilog.}{lst:v:use}
 
 
 Listing~\ref{lst:ch:use} shows how to create a component with \code{new} in Chisel,
@@ -7329,21 +7365,21 @@ The component declaration is very similar to the entity declaration of the adder
 The component is instantiated by calling it, prepending it with a name (\code{m})
 and connecting the input and output ports with a \code{port map} to signals.
 
-Listing~\ref{lst:sv:use} shows how to create and use a component (module)
-in SystemVerilog. Here it is created by calling it, followed by a name (\code{m}),
+Listing~\ref{lst:v:use} shows how to create and use a component (module)
+in Verilog. Here it is created by calling it, followed by a name (\code{m}),
 and connecting the wires to the ports.
 
 Note \code{a}, \code{b}, and \code{sum} represent the ports of the adder;
 \code{in1}, \code{in2}, and \code{result} are the wires/signals connected to those ports.
 The instances of the adders in all three examples where named \code{m}.
-In VHDL and SV, the name of the component is not used so often, in Chisel we need
-the name to access the IO ports.
+In VHDL and Verilog, the name of the component is not used so often, in Chisel we need
+the name of the module to access the IO ports.
 
 \subsection{Register}
 
-\longlist{code/sv_ch_register.txt}{A register with reset and enable in Chisel.}{lst:sv:ch:register}
+\longlist{code/v_ch_register.txt}{A register with reset and enable in Chisel.}{lst:v:ch:register}
 
-Listing~\ref{lst:sv:ch:register} shows an 8-bit register with reset (to 0) and an enable input in Chisel,
+Listing~\ref{lst:v:ch:register} shows an 8-bit register with reset (to 0) and an enable input in Chisel,
 using the three-parameter version of \code{RegEnable}. The inputs are connected at the creation
 and the output is available the the returned value of \code{RegEnable}.
 Note that the \code{clock} and \code{reset} signals are implicit in Chisel.
@@ -7359,35 +7395,99 @@ In contrast to Chisel both, \code{clock} and \code{reset}, need to
 be explicitly used.
 
 
-\longlist{code/sv_register.txt}{A register with reset and enable in SystemVerilog.}{lst:sv:register}
+\longlist{code/v_register.txt}{A register with reset and enable in Verilog.}{lst:v:register}
 
 
-Listing~\ref{lst:sv:register} shows the definition of a
-register (\code{reg\_data}) with a synchronous reset and an enable input in SystemVerilog.
-The SV \code{reg} keyword declares a variable. This does not necessarily mean
+Listing~\ref{lst:v:register} shows the definition of a
+register (\code{reg\_data}) with a synchronous reset and an enable input in Verilog.
+The Verilog \code{reg} keyword declares a variable. This does not necessarily mean
 that the variable represents a register. It can also represent combinational logic
-when used in an \code{always\_comb} block.
-The \code{always_ff \@} statement with a clock implies that the code within that block
+when used in an \code{always @(*)} block.
+The \code{always @(posedge clk)} statement with a clock implies that the code within that block
 represents a register.
-%The \code{assign} statement is a concurrent statement that continuously
-%assigns the value of the register to the output port \code{out}.
 
-Registers are defined implicitly by a code pattern in SV
+Registers are defined implicitly by a code pattern in Verilog
 and VHDL. Whereas, in Chisel the registers are defined explicitly.
+
+\subsection{Combinational Blocks}
+
+Simple combinational logic can be written by an assignment as a concurrent
+statement, in all three languages. We have seen examples in the adder components.
+However, for more complex logic, e.g. describing nested conditions, it is more convenient
+to use blocks for combinational logic. In Verilog this is an \code{always} block,
+in VHDL this is a \code{process}.
+
+
+\longlist{code/v_ch_comb.txt}{A \code{switch} statement in Chisel.}{lst:v:ch:comb}
+
+Listing~\ref{lst:v:ch:comb} shows as an example of a combinational block a \code{switch}
+statement in Chisel. This code is a 4:1 multiplexer. In Chisel the default value
+for the output needs to be assigned before the \code{switch} statement.
+
+\longlist{code/vhdl_case.txt}{A \code{case} statement in VHDL.}{lst:vhdl:comb}
+
+Listing~\ref{lst:vhdl:comb} shows the same combinational block in VHDL.
+A combinational block is a \code{process}. Start start is additionally marked with
+a \code{begin} and the end of the process with \code{end process;}
+The default value for that \code{case}
+statement is assigned in with a \code{when others} entry.
+Note that a VHDL process has a sensitive list, where all signals that appear
+on the righthand side of an expression or a a condition need to be listed.
+In our example this is \code{sel} and \code{input}.
+
+\longlist{code/v_comb.txt}{A \code{case} statement in Verilog.}{lst:v:comb}
+
+Listing~\ref{lst:v:comb} shows the same combinational block in Verilog.
+Note the marking of the start of combinational block with \code{always @(*) begin}
+and the end of the block with \code{end}. The default value for that \code{case}
+statement is assigned in with a \code{default} entry.
+This example includes to module header to show that the output \code{out}
+needs to be declared as \code{reg}, as is is assigned in an \code{always} block.
+
+Note that Verilog has two different assignment operators: the \code{=} is called
+a \emph{blocking} statement and the \code{<=} a \emph{non-blocking} statement.
+This might also be a source of confusion. Use the \code{<=} assignment operator
+for registers (in an \code{always @(posedge clk)} block) and the \code{=} 
+assignment operator
+for combinational logic (in an \code{always @(*)} block).
+
+
+
+Another convenient construct in a combinational block is a combination of
+conditionals, known also as ``if...elseif...else'' statement.
+We will show an example with three inputs (\code{in1}, \code{in2}, and \code{in3}),
+two boolean conditions (\code{c1} and \code{2}), and the output \code{out}.
+
+\longlist{code/v_ch_if_else.txt}{An ``if...elseif...else'' statement in Chisel.}{lst:v:ch:if_else}
+
+Listing~\ref{lst:v:ch:if_else} shows the Chisel version. However, as \code{if} and
+\code{else} are conditional expressions in Scala (reserved keywords), Chisel
+uses \code{when}, \code{.elsewhen}, and \code{.otherwise}.
+
+\longlist{code/vhdl_if_else.txt}{An ``if...elseif...else'' statement in VHDL.}{lst:vhdl:if_else}
+
+Listing~\ref{lst:vhdl:if_else} shows the same construct in VHDL. Note that all input
+signals (including the condition signals) need to be part of the sensitivity list
+of the process.
+
+\longlist{code/v_if_else.txt}{An ``if...elseif...else'' statement in Verilog.}{lst:v:if_else}
+
+Listing~\ref{lst:v:if_else} shows the same expression in Verilog within an \code{always} block.
+
+
 
 \subsection{Advanced Chisel Features}
 
-The basic elements look similar in Chisel, SV, and VHDL, and the verbosity
-is also in the same range (although VHDL is a bit chattery).
-However, neither VHDL nor SV contain object-oriented features for hardware
-description. SV include object-oriented programming only for writing test benches.
+The basic elements look similar in Chisel, Verilog, and VHDL, and the verbosity
+is also in the same range (although VHDL is a bit more chattery).
+However, neither VHDL nor Verilog contain object-oriented features for hardware
+description. SystemVerilog includes object-oriented programming only for writing test benches.
 Both languages are missing functional programing, which is important to
 write hardware generators.
-
 Furthermore, \code{Bundle}s with directions and the possibility to flip the direction
 are also missing.
 
-Although any hardware can be equally described in Chisel, VHDL, and SV,
+Although any hardware can be equally described in Chisel, VHDL, and Verilog,
 the modern features in Chisel allow the programming of at a higher abstraction
 writing hardware generators.
 
@@ -7447,6 +7547,25 @@ are \code{trait}s that extend Chisel's \code{BlackBox} class meaning that, e.g.,
 \code{class Example extends BlackBox with HasBlackBoxInline} is equivalent to\\
 \code{class Example extends} \code{HasBlackBoxInline}.
 
+\section{Exercise}
+
+Use one of your (small) Chisel designs and translate it manually to Verilog.
+To avoid writing a test bench in Verilog, you can reuse your test code from
+ChiselTest and instantiate the Verilog code as a black box for testing.
+You can also change your test code to instantiate your Chisel and your Verilog
+component and compare them in the same Chisel tester.
+The example in the book are tested in that way. You can take a look into the
+code from the book examples to see how this can be done.
+This form of cosimulation can actually also be driven from random test vectors
+and comparing the Chisel ``golden model'' with your Verilog translation.
+
+The VHDL integration within Chisel/Verilator is not yet so smooth, although
+a solution with GHLD plugin for yosys should be able to translate VHDL to
+Verilog, which can then be tested in Chisel similar to the Verilog designs.
+
+For VHDL there are less open-source options available.
+The code in the chapter is tested with test benches written in VHDL (generated
+by copilot) and simulated with GHDL.\footnote{\url{http://ghdl.free.fr/}}
 
 \chapter{Reserved Keywords}
 \index{Reserved keywords}
@@ -7533,6 +7652,13 @@ Lipsi also showcases the productivity of Chisel/Scala. It took me 14 hours to de
 hardware in Chisel and run it on an FPGA, write an assembler in Scala, write a
 Lipsi instruction set simulator in Scala for co-simulation, and write a few test cases
 in Lipsi assembler.
+
+
+\item[\myref{https://leros-dev.github.io/}{Leros}] is a small accumulator based processor
+processor, originally as a16-bit version written in VHDL~\cite{leros:fpl2011}.
+The redesign is now coded in Chisel and a 32-bit version~\cite{leros:arcs2019}.
+Morten Borup Petersen ported the LLVM C compiler to support the Leros ISA~\cite{leros:comp:2019}.
+
 
 \item[\myref{http://www.opensocfabric.org/}{OpenSoC Fabric}] is an open-source NoC
 generator written in Chisel~\cite{OpenSoC:ispass2016}. It is intended to provide a
