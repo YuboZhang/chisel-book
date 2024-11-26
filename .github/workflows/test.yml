@@ -12,22 +12,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up JDK 11
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v4
       with:
         java-version: '11'
         distribution: 'temurin'
     - name: Setup Verilator
-      # should include texlive-full for Latex test
       run: sudo apt-get install verilator
     - name: Setup z3
       run: sudo apt-get install z3
-    - name: Run tests
-      run: sbt test
-    # should run make for the test including Latex
-    # - name: Build book
-    #   run: |
-    #     make gencode
-    #     make fig
-    #     make book
+    - name: Setup Latex
+      run: sudo apt-get install texlive-full
+    - name: Run tests and build the book
+      run: make
